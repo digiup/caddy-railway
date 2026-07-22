@@ -1,44 +1,13 @@
-# Single-entry gateway. Upstream defaults match local monorepo ports;
-# override with API_UPSTREAM / WEB_UPSTREAM / MARKETING_UPSTREAM in deploy.
 :{$PORT:3000} {
-	log {
-		format json
-	}
-	encode gzip
-
-	# --- API (Hono @ :3001) ---
-	handle /rpc* {
-		reverse_proxy {$API_UPSTREAM:localhost:3001}
-	}
-	handle /api/* {
-		reverse_proxy {$API_UPSTREAM:localhost:3001}
-	}
-	handle /.well-known/* {
-		reverse_proxy {$API_UPSTREAM:localhost:3001}
-	}
-	handle /health {
-		reverse_proxy {$API_UPSTREAM:localhost:3001}
-	}
-
-	# --- Product SPA (TanStack @ :5173) ---
-	# Strip /app so /app/dashboard → /dashboard (SPA routes are bare).
-	handle_path /app* {
-		reverse_proxy web.railway.internal
-	}
-	@web path /auth* /oauth* /admin* /dashboard* /balancer* /connections* /positions* /activity* /history* /settings* /onboarding* /asset* /trading* /confirmation* /chat*
-	handle @web {
-		reverse_proxy web.railway.internal
-	}
-	# Marketing landing images before general Vite /assets
-	handle /assets/landing* {
-		reverse_proxy marketing.railway.internal
-	}
-	handle /assets* {
-		reverse_proxy web.railway.internal
-	}
-
-	# --- Marketing (Astro @ :4321) — landing, blog, legal, default ---
-	handle {
-		reverse_proxy marketing.railway.internal
-	}
+    # API routes go to the backend service over private networking
+    handle /api/* {
+        reverse_proxy api.railway.internal
+    }
+    # Everything else serves the SPA
+    handle /app/* {
+        reverse_proxy web.railway.internal
+    }
+	handle /marketing/* {
+        reverse_proxy marketing.railway.internal
+    }
 }
