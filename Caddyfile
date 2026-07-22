@@ -7,7 +7,7 @@
     handle /app/* {
         reverse_proxy web.railway.internal
     }
-	handle /marketing/* {
+	handle /* {
         reverse_proxy marketing.railway.internal
     }
 }
