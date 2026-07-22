@@ -22,6 +22,6 @@
         reverse_proxy web.railway.internal
     }
 	handle /* {
-        reverse_proxy marketing.railway.internal
+        reverse_proxy marketing-staging-ebb9.up.railway.app
     }
 }
