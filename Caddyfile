@@ -1,8 +1,5 @@
 :{$PORT:3000} {
     # API routes go to the backend service over private networking
-    handle /api/* {
-        reverse_proxy api.railway.internal:3000
-    }
     # Everything else serves the SPA
     handle {
         root * www
