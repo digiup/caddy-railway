@@ -7,11 +7,11 @@
 	encode gzip
 
 	# SPA (Vite base `/app/`) — strip prefix so static server sees /assets, /
-	handle_path /app/* {
+	handle_path /app* {
 		reverse_proxy {$WEB_UPSTREAM:http://web.railway.internal:8080}
 	}
 
-	handle /api/* {
+	handle /api* {
 		reverse_proxy {$API_UPSTREAM:http://api.railway.internal:3001}
 	}
 
