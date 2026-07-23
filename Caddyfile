@@ -15,7 +15,7 @@
     }
 
     # 3. Default fallback for the primary app dist folder
-    handle {
-        reverse_proxy http://marketing.railway.internal
-    }
+    # handle {
+    #     reverse_proxy http://marketing.railway.internal
+    # }
 }
