@@ -1,9 +1,22 @@
-:{$PORT:3000} {
-    # API routes go to the backend service over private networking
-    # Everything else serves the SPA
+{
+    # Railway handles TLS termination at the edge
+    auto_https off
+}
+
+:{$PORT:8080} {
+    # 1. Route specific path to another app's dist folder
+    handle_path /app/* {
+        reverse_proxy web.railway.internal:3000
+    }
+
+    # 2. Route API or main traffic to an internal server URL
+    handle /api/* {
+        reverse_proxy api.railway.internal:3000
+    }
+
+    # 3. Default fallback for the primary app dist folder
     handle {
-        root * www
-        encode gzip
+        root * /app/dist
         file_server
         try_files {path} /index.html
     }
