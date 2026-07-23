@@ -6,16 +6,16 @@
 :{$PORT:8080} {
     # 1. Route specific path to another app's dist folder
     handle_path /app/* {
-        reverse_proxy web.railway.internal:3000
+        reverse_proxy http://web.railway.internal
     }
 
     # 2. Route API or main traffic to an internal server URL
     handle /api/* {
-        reverse_proxy api.railway.internal:3000
+        reverse_proxy http://api.railway.internal
     }
 
     # 3. Default fallback for the primary app dist folder
     handle {
-        reverse_proxy marketing.railway.internal:3000
+        reverse_proxy http://marketing.railway.internal
     }
 }
