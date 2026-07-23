@@ -16,8 +16,6 @@
 
     # 3. Default fallback for the primary app dist folder
     handle {
-        root * /app/dist
-        file_server
-        try_files {path} /index.html
+        reverse_proxy marketing.railway.internal:3000
     }
 }
