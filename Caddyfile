@@ -1,21 +1,29 @@
 {
-    # Railway handles TLS termination at the edge
-    auto_https off
+	# Railway terminates TLS at the edge
+	auto_https off
 }
 
 :{$PORT:8080} {
-    # 1. Route specific path to another app's dist folder
-    handle_path /app/* {
-        reverse_proxy http://web.railway.internal
-    }
+	encode gzip
 
-    # 2. Route API or main traffic to an internal server URL
-    handle /api/* {
-        reverse_proxy http://api.railway.internal
-    }
+	# SPA (Vite base `/app/`) — strip prefix so static server sees /assets, /
+	handle_path /app/* {
+		reverse_proxy {$WEB_UPSTREAM:http://web.railway.internal:8080}
+	}
 
-    # 3. Default fallback for the primary app dist folder
-    # handle {
-    #     reverse_proxy http://marketing.railway.internal
-    # }
+	handle /api/* {
+		reverse_proxy {$API_UPSTREAM:http://api.railway.internal:3001}
+	}
+
+	handle /.well-known* {
+		reverse_proxy {$API_UPSTREAM:http://api.railway.internal:3001}
+	}
+
+	handle /health {
+		reverse_proxy {$API_UPSTREAM:http://api.railway.internal:3001}
+	}
+
+	handle {
+		reverse_proxy {$MARKETING_UPSTREAM:http://marketing.railway.internal:8080}
+	}
 }
